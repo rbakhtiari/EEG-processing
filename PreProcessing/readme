@@ -1,1 +1,44 @@
 
+These are Preprocessing steps for EEG. I got these codes from Jonah Elke, and made a few changes over years for different projects.
+
+EEG Processing steps, are performed using the following Three codes:
+MBSRPreprocessing1.m
+	1) import EGI file to raw format
+        2) add in channel locations from ModGSN-HydroCel-257.sfp
+        3) lowpass filter
+	4) highpass filter-
+        5) adjust latency for the system delay
+        6) import E-prime behavioural event file, and merge it into EEG data
+	7) epoching based on stimuli presentation
+	
+Then based on visual inspection of signal, the following two steps are performed manually:
+       8) Bad channels: look for noise
+       9) Bad epoch: look for truncated blinks, drift, noise		
+
+MBSRICAReliability.m	
+This step is done based on Groppe, Makeig, & Kutas (2009), to create more objectivity in the ICA rejection process, especially given the noise in the dataset. In all cases except one, the ICA components are noise. 
+	10) this script must be inside the ICA_reliability directory
+	11) removes the vertex channel
+	12) split the data into equal halves
+	13) run icas on full data and each halves
+	14) computes ICA reliability functions from Groppe, Makeig, & Kutas (2009)
+
+Check all the reliable ICAs and discard them if they are noise
+
+MBSRPreprocessing2.m
+        15) interpolates missing channels
+        16) re-references the data to the average
+        17) baseline corrects
+
+Manual epoch rejection
+
+MBSRExporttoCSV.m
+		- separates the conditions and saves .set and .csv
+		- prints file name if number of trials <10
+	1.8) ERP>Code>FixTargetafterTargetAccuracy.m
+		- the code that exported the accuracy was incorrect and coded targetaftertarget incorrectly, this code updates it and fixes it
+
+	1.9) Manually opened every condition file and noted the trial numbers (see trialnumbertests.xlsx)
+		For other projects, I've written code to extract this info automatically, but I haven't for this project.
+
+	1.10) Move csvs to local computer (ERP>OutputData>MBSR_export_files_redo) using rsync
